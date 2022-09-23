@@ -1,0 +1,23 @@
+{
+  "name": "oyamoserver",
+  "version": "1.0.0",
+  "description": "Oyamo Blog Server",
+  "main": "server",
+  "type": "module",
+  "scripts": {
+    "start": "node server",
+    "dev": "nodemon server"
+  },
+  "keywords": [
+    "OYAMO"
+  ],
+  "author": "MESHACK CHUMBA",
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  },
+  "dependencies": {
+    "colors": "^1.4.0",
+    "express": "^4.18.1"
+  }
+}
