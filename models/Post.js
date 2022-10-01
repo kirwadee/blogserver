@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const postSchema = new mongoose.Schema({
-    postCreatorId:{
+    userId:{
         type:String,
         required:true,
     },

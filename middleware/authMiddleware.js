@@ -1,38 +1,19 @@
 import { createCustomError } from "./createCustomeError.js"
 import jwt from 'jsonwebtoken'
-import User from "../models/User.js"
 
 
 
 export const protect = async(req, res, next)=>{
- const authHeaders = req.headers.authorization || req.headers.authorization
- 
- if(!authHeaders) return next(400, "No request headers")
- 
- if(authHeaders.startsWith('Bearer ')){
-    const token = authHeaders.split(' ')[1]
-    if(!token) return next(createCustomError(400, "No token attached"))
+   const token = req.cookies.access_token
 
-    jwt.verify(token, process.env.JWT_SECRET, async(err, decoded) => {
-        if(err) return next(createCustomError(401, "Token Not Valid"))
-   
-        console.log(decoded)
-        console.log("===============")
+   if(!token) return next(createCustomError(401, "You are Not Authenticated"))
 
-        const loggedInUser = await User.findById(decoded.id).select("-password")
-        console.log(loggedInUser)
-        console.log("===============")
-        req.userId = loggedInUser?._id
-        req.isAdmin = loggedInUser?.isAdmin
-        console.log(req.userId)
-        console.log(req.isAdmin)
+   //if there is a token verify that user by returning a call back fn of either err or user
+   jwt.verify(token, process.env.JWT_KEY, (err,decodedUserObject) =>{
+       if(err) return next(createCustomError(403, "Token Not Valid"))
+       req.user = decodedUserObject
 
-        req.user = decoded
-
-        next()
-    })
- } else {
-    return next(createCustomError(400, "No token"))
- }
+       next()
+   })
 
 }

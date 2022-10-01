@@ -7,7 +7,7 @@ import User from "../models/User.js"
 // @access Private
 export const getUserProfileCtrl = async(req, res, next)=>{
     try {
-        const user = await User.findById(req.userId)
+        const user = await User.findById(req.user.id)
         if(!user) return next(createCustomError(404, "No user found!"))
 
         res.status(200).json(user)
@@ -23,7 +23,7 @@ export const getUserProfileCtrl = async(req, res, next)=>{
 // @access Private
 export const getAllUsers = async(req, res, next)=>{
     
-        if(req.userId && req.isAdmin){
+        if(req.user.id){
             try {
                 const users = await User.find({})
 
@@ -44,7 +44,7 @@ export const getAllUsers = async(req, res, next)=>{
 // @route DELETE /api/users/:Id
 // @access Private
 export const deleteUserCtrl = async(req, res, next) => {
-        if(req.params.id === req.userId || req.isAdmin){
+        if(req.params.id === req.user.Id){
           try {
             const user = await User.findByIdAndDelete(req.params.id)
 
@@ -65,7 +65,7 @@ export const deleteUserCtrl = async(req, res, next) => {
 // @route UPDATE /api/users/:Id
 // @access Private
 export const updateUserCtrl = async(req, res, next) => {
-    if(req.params.id === req.user.id || req.isAdmin){
+    if(req.params.id === req.user.id ){
         try {
             const updatedUser = await User.findByIdAndUpdate(
                 req.params.id, 

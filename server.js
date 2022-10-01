@@ -5,12 +5,14 @@ import dotenv from 'dotenv'
 import authRouter from './routes/auth-route.js'
 import userRouter from './routes/user-routes.js'
 import postRouter from './routes/post-routes.js'
+import cors from 'cors'
 
 dotenv.config()
 connectToDb()
 
 const app = express()
 app.use(express.json())
+app.use(cors())
 
 const port = process.env.PORT || 5000
 
