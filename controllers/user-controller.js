@@ -1,4 +1,5 @@
 import { createCustomError } from "../middleware/createCustomeError.js"
+import Post from "../models/Post.js"
 import User from "../models/User.js"
 
 
@@ -87,4 +88,44 @@ export const updateUserCtrl = async(req, res, next) => {
     }else{
         return next(createCustomError(403, "You can only update your account"))
     }
+ }
+
+ //like a post by pushing your id to likedBy array in post model
+//pull your id from dislikedBy array if u disliked b4
+export const likePostCtrl = async(req, res, next)=>{
+    //get my id
+    const myUserId = req.user.id
+    //get post id u want to like
+    const postId = req.params.postId
+
+    try {
+        await Post.findByIdAndUpdate(postId,{
+            $addToSet:{likedBy:myUserId},
+            $pull:{dislikedBy:myUserId}
+        })
+
+        res.status(200).json("The post has been liked")
+    } catch (error) {
+        next(error)
     }
+}
+
+//dislike a post by pushing your id to dislikedBy array in post model
+//pull your id from likedBy array in post model
+export const dislikePostCtrl = async(req, res, next)=>{
+    //find my id
+    const myUserId = req.user.id
+    //find the post id I want to dislike
+    const thatPostId = req.params.postId
+
+    try {
+        await Post.findByIdAndUpdate(thatPostId,{
+            $addToSet:{dislikedBy:myUserId},
+            $pull:{likedBy:myUserId}
+        })
+
+        res.status(200).json("The post has been disliked")
+    } catch (error) {
+       next(error) 
+    }
+}

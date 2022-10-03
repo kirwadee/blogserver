@@ -86,7 +86,7 @@ export const googleAuthCtrl = async(req, res, next) => {
         const newUser = new User({...req.body, fromGoogle:true})
         const savedUser = await newUser.save()
          //if everything is okay create access token and send the user as response
-       const token = jwt.sign({id:savedUser._id}, process.env.JWT_SECRET)
+       const token = jwt.sign({id:savedUser._id}, process.env.JWT_SECRET, {expiresIn:'7d'})
 
        res.cookie("access_token", token, {
         httpOnly:true

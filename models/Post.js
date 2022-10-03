@@ -13,17 +13,13 @@ const postSchema = new mongoose.Schema({
         type:String,
         required:true,
     },
-    photo:{
+    img:{
         type:String,
         required:false,
     },
-    categories:{
-        type:[String],
-        default:[]
-    },
-    views:{
-        type:Number,
-        default:0
+    cat:{
+        type:String,
+        default:''
     },
     likedBy:{
         type:[String],

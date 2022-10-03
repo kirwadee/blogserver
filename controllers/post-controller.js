@@ -5,7 +5,7 @@ import Post from "../models/Post.js"
 // @route POST /api/posts
 // @access Private
 export const addPostCtrl = async(req, res, next) => {
-  
+   
     const newPost = new Post({ userId:req.user.Id, ...req.body })
     try {
         const savedPost = await newPost.save()
@@ -91,18 +91,7 @@ export const getSinglePostCtrl = async(req, res, next) => {
     }
 }
 
-//increment views by 1 in any post watched or visited or opened
-export const addViewsCtrl = async(req, res, next) => {
-    try {
-       await Post.findByIdAndUpdate(
-        req.params.id,
-        { $inc:{ views: 1 }}
-        ) 
-        res.status(200).json("The view has been increased")
-    } catch (error) {
-        next(error)  
-    }
-}
+
 
 //get random posts
 export const getRandomPostsCtrl = async(req, res, next) => {
@@ -114,25 +103,17 @@ export const getRandomPostsCtrl = async(req, res, next) => {
     }
 }
 
-//get trending posts ie post with most views to the least views
-export const getTrendingPosts = async(req, res, next) => {
-    try {
-        const trendingPosts = await Post.find().sort({ views: -1})
-        res.status(200).json(trendingPosts)
-    } catch (error) {
-        next(error)
-    }
-}
 
 
 
-
-//search posts by categories field which is an array || use $in filter
+//search posts by cat field
 export const searchPostsByCategoriesCtrl = async(req, res, next) => {
-const catsSearched = req.query.categories.split(",")
+    //cat field in post model ie science, art is the searched word
+const catSearched = req.query.cat
 try {
-    //query in all post categories field array and find the matching catsSearched
-    const foundCats = await Post.find({ categories: { $in: catsSearched} }).limit(40)
+    //query in all post categories field  and find the matching catsSearched
+    const foundCats = await Post.find({ cat: catSearched }).limit(40)
+    if(!foundCats.length) return next(createCustomError(404, "No Recommended Posts Found!"))
     res.status(200).json(foundCats)
 } catch (error) {
     next(error)
@@ -141,12 +122,16 @@ try {
 
 //search posts by its title field which is a string || use $regex filter
 export const searchPostsByItsTitleCtrl = async(req, res, next) => {
+    //searched word is our words that we search
     const queryString = req.query.searchedWord
     
     try {
         const matchedString = await Post.find({ title: { $regex: queryString, $options:"i" }})
+        if(!matchedString.length) return next(createCustomError(404, "Results Not Found!"))
         res.status(200).json(matchedString)
     } catch (error) {
         next(error)
     }
 }
+
+
