@@ -8,7 +8,7 @@ import User from "../models/User.js"
 // @access Private
 export const getUserProfileCtrl = async(req, res, next)=>{
     try {
-        const user = await User.findById(req.user.id)
+        const user = await User.findById(req.params.id)
         if(!user) return next(createCustomError(404, "No user found!"))
 
         res.status(200).json(user)

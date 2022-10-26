@@ -5,7 +5,7 @@ import { protect } from '../middleware/authMiddleware.js'
 
 const userRouter = express.Router()
 
-userRouter.get("/profile/:id", protect,  getUserProfileCtrl)
+userRouter.get("/profile/:id",  getUserProfileCtrl)
 userRouter.get("/", protect, getAllUsers)
 userRouter.delete("/:id", protect, deleteUserCtrl)
 userRouter.put("/:id", protect, updateUserCtrl)
